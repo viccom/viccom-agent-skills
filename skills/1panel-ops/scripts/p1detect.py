@@ -97,8 +97,10 @@ def detect_app_port(app_name="openresty"):
         import sqlite3
         con = sqlite3.connect("file:%s?mode=ro" % agent_db, uri=True, timeout=5)
         try:
+            # 应用名随 1Panel 版本可能是 OpenResty/openresty，按小写比较
             row = con.execute(
-                "select http_port, https_port from app_installs where name=?", (app_name,)
+                "select http_port, https_port from app_installs where lower(name)=lower(?)",
+                (app_name,),
             ).fetchone()
             if row:
                 return {"http": row[0] or 0, "https": row[1] or 0}
@@ -219,6 +221,8 @@ def main():
         PROFILE.parent.mkdir(parents=True, exist_ok=True)
         PROFILE.write_text(json.dumps(prof, ensure_ascii=False, indent=2))
         os.chmod(PROFILE, 0o600)
+        # 写盘成功后回填状态，避免输出里 credential.profile 仍是探测时的旧值
+        prof["credential"]["profile"] = True
         print("已写入 %s" % PROFILE, file=sys.stderr)
     print(json.dumps(prof, ensure_ascii=False, indent=2))
     return 0 if prof["ready"] else 2
