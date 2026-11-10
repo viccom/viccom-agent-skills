@@ -1,0 +1,18 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# 探测生成的本机参数（含 IP、端口、证书清单，因人而异）
+profile.json
+
+# 凭据（绝不提交）
+api_key
+api_key_id
+*.token
+*.pem
+*.key
+.env
+
+.DS_Store
