@@ -36,6 +36,15 @@ cp -r skills/1panel-ops ~/.reasonix/skills/
 cp -r skills/1panel-ops ~/.claude/skills/
 ```
 
+**希望跟随仓库更新**（推荐开发者使用）：改用软链，`git pull` 后自动生效。
+
+```bash
+ln -sfn "$PWD/skills/1panel-ops" ~/.reasonix/skills/1panel-ops
+```
+
+> 已验证：Reasonix 能正确解析软链形式的 skill，且无警告。若你的 Agent 会跳过 symlink，
+> 退回 `cp -r` 方式即可。
+
 装好后先跑一次环境探测（`1panel-ops` 专有步骤）：
 
 ```bash
