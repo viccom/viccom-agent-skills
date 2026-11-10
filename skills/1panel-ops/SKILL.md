@@ -39,6 +39,7 @@ python3 <skill_dir>/scripts/p1detect.py --write    # 写入 ~/.config/1panel/pro
   "schema": 1,
   "install_dir": "/opt/1panel",
   "api": { "base": "http://127.0.0.1:5000", "port": 5000,
+           "port_source": "fingerprint", "verified": true,
            "entrance": "1panel", "admin": "admin" },
   "openresty": { "http": 80, "https": 443 },
   "certs": [ { "id": 5, "domain": "*.example.com", "provider": "dnsAccount",
@@ -57,14 +58,20 @@ python3 <skill_dir>/scripts/p1detect.py --write    # 写入 ~/.config/1panel/pro
 | 字段 | 来源 | 探测失败时 |
 |---|---|---|
 | `install_dir` | 依次尝试 `/opt/1panel`、`/usr/local/1panel`、`/usr/share/1panel` | 需手工指定 |
-| `api.port` | `ss -tlnp` 找 `1panel-core`；退化到 `core.db` 的 `ServerPort`；再退化 `9999` | 手工设 `P1_URL` |
-| `api.entrance` | `core.db` 的 `SecurityEntrance` | 空（仅影响 Web 路径） |
-| `api.admin` | `core.db` 的 `UserName` | 空 |
-| `openresty.http/https` | `agent.db` 的 `app_installs`（**vhost listen 的真实依据**） | `null` |
-| `certs` / `websites` | `agent.db`（只读，不含私钥） | `[]` |
+| `api.port` | `ss` 找 `1panel-core`；退化到 `core.db` 的 `ServerPort`；再退化到本地监听端口的 HTTP 指纹；最后用已有 profile 兜底；仍失败用 `9999`。实际来源见 `api.port_source`，是否命中见 `api.verified` | 手工设 `P1_URL` |
+| `api.entrance` | `core.db` 的 `SecurityEntrance` | 空（仅影响 Web 路径）；读不到库时沿用 profile 快照 |
+| `api.admin` | `core.db` 的 `UserName` | 空；读不到库时沿用 profile 快照 |
+| `openresty.http/https` | `agent.db` 的 `app_installs`（**vhost listen 的真实依据**） | `null`；读不到库时沿用 profile 快照 |
+| `certs` / `websites` | `agent.db`（只读，不含私钥） | `[]`；读不到库时沿用 profile 快照 |
 | `credential` | 检查 `~/.config/1panel/{api_key,api_key_id}` 是否存在 | `false` |
 
 > 探测**只读**，不改任何系统状态。数据库用 `mode=ro` 打开，不会触发 WAL 写回。
+
+> **非 root 运行的局限**：`<install_dir>/db/` 通常是 `0700 root`，普通用户读不到
+> `core.db`/`agent.db`，`ss -tlnp` 也看不到 `1panel-core` 进程名。此时端口靠 HTTP
+> 指纹识别（`/` 的拦截页文案，或 `/api/v2/websites/list` 的统一 JSON 信封）；
+> `entrance`/`admin`/`openresty`/`certs`/`websites` 探测为空时沿用已有 profile
+> 快照，`--write --force` 不会因此清空快照。
 
 ## 配置解析顺序
 
@@ -79,6 +86,14 @@ python3 <skill_dir>/scripts/p1detect.py --write    # 写入 ~/.config/1panel/pro
 | 5 | 内置默认 `http://127.0.0.1:9999` | 最后兜底 |
 
 `profile.json` 的 `api.base` **只是默认值来源**，随时可用 `P1_URL` 覆盖。
+
+`p1detect.py` 解析 `api.base` 的顺序（实际来源标注在输出的 `api.port_source`）：
+
+`P1_URL` → `ss` 可见的 `1panel-core` → `core.db` 的 `ServerPort` → 本地监听端口
+HTTP 指纹 → 已有 `profile.json`（兜底）→ 默认 `http://127.0.0.1:9999`。
+
+`api.verified=false` 表示该地址未通过 1Panel HTTP 指纹校验：可能端口变更、服务未
+启动，或被 IP 白名单/安全入口拦截。
 
 ## 首次配置（Agent 可自动完成的部分）
 
