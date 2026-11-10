@@ -1,0 +1,26 @@
+{
+  "mcp": {
+    "servers": {
+      "example-http": {
+        "type": "http",
+        "url": "https://mcp.example.com/mcp",
+        "headers": {
+          "Authorization": "Bearer <REDACTED>"
+        },
+        "timeoutMs": 30000,
+        "alwaysLoad": false
+      },
+      "example-stdio": {
+        "type": "stdio",
+        "command": "<path-to-mcp-server>",
+        "args": [
+          "--stdio"
+        ],
+        "env": {
+          "API_KEY": "<REDACTED>"
+        },
+        "timeoutMs": 30000
+      }
+    }
+  }
+}

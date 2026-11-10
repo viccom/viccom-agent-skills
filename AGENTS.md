@@ -18,6 +18,16 @@ viccom-agent-skills/
 │   ├── UNVERIFIED.md   # 14 个来源/许可未确认技能（所有者授权收录）
 │   ├── EXCLUDED.md
 │   └── licenses/
+├── zcode/              # ZCode 提示词体系文档与可移植全局指令
+│   ├── prompt-design.md
+│   └── global-instruction/
+│       ├── AGENTS.md                      # 可移植策略（不改本机源文件）
+│       ├── SEDS.md
+│       ├── README.md
+│       ├── validate.sh                    # 包自检（JSON/shell/链接/密钥/门禁回归）
+│       ├── templates/                     # 机器 profile/记忆/MCP/hooks/门禁/体检
+│       ├── guides/                        # 工作流/交叉编译/镜像/编译资源/坑
+│       └── archive/                       # 原始机器记忆快照（非可移植）
 └── skills/
     └── <skill-name>/   # 每个子目录 = 一个独立可分发的技能
         ├── SKILL.md
@@ -33,6 +43,32 @@ viccom-agent-skills/
 - 来源、固定版本与许可：[`third-party/SOURCES.md`](third-party/SOURCES.md)；完整许可文本：[`third-party/licenses/`](third-party/licenses/)；未收录清单：[`third-party/EXCLUDED.md`](third-party/EXCLUDED.md)。
 - **新增第三方技能**：优先确认 MIT/Apache-2.0 等宽松许可 → 拷贝到 `skills/<name>/` → 更新 `SOURCES.md`、复制 LICENSE 到 `third-party/licenses/` → 更新 README 索引。来源或许可不明的技能默认不收录；如所有者明确要求，记入 `UNVERIFIED.md`，不得直接放进 `SOURCES.md`。
 - **更新第三方技能**：以上游仓库为准手动同步，并同步更新 `SOURCES.md` 中的 commit；不要把上游文件改成仓库自有风格。
+
+## ZCode 全局指令与模板
+
+`zcode/global-instruction/` 是**可移植**的 ZCode 全局策略包，用于复制到其他机器，**不是技能**，不参与 `skills/` 索引，也不随技能安装：
+
+- `AGENTS.md` —— 跨项目行为约束；已去除机器路径与技能目录，可在未安装 ai-memory 的机器上独立使用。**本机源文件 `~/.zcode/AGENTS.md` 保持原样，不要用仓库副本覆盖它。**
+- `SEDS.md` —— 项目级 `AGENTS.md` 十四段式模板。
+- `README.md` —— 安装/复制/维护说明。
+- `validate.sh` —— 包自检：JSON/shell/链接/密钥/质量门禁回归。
+- `templates/` —— 机器 profile、原生记忆、MCP/hooks、质量门禁、体检脚本模板。
+- `guides/` —— spec 工作流、workflow 约定、交叉编译、国内镜像、共享机编译策略、通用坑。
+- `archive/` —— 原始 ai-memory/jcode 机器快照，**非可移植**，仅供追溯。
+
+维护规则：
+
+- **本机源文件保持原样**；仓库副本是可移植策略，不能用源文件直接覆盖。
+- **ZCode 只加载全局 `~/.zcode/AGENTS.md` + 会话 workspace 最近一个 `AGENTS.md`**；项目规则放 workspace 根，子目录规则并入根文件或把子目录作为 workspace 打开。`CLAUDE.md` 默认不读。
+- 机器事实放 `machine-profile.md`（每台机器自己的，不进仓库）；项目事实放项目级 `AGENTS.md`；跨项目规则才放 `AGENTS.md`。
+- 不把技能目录、主机名、端口、token 写进 `AGENTS.md`；原始机器事实放 `archive/`。
+- 更新流程：从源文件/记忆页提取可移植内容 → 去掉机器事实与凭据 → 用 `grep` 检查本机路径 → 更新 `AGENTS.md`/`guides`/`templates`。
+- 改动本包后跑 `bash zcode/global-instruction/validate.sh`；它检查 JSON/shell/链接/密钥，并回归测试质量门禁是否会漏掉暂存区密钥。
+- 公开可见；**不得放入密钥、token 或凭据**。
+
+## ZCode 提示词体系文档
+
+[`zcode/prompt-design.md`](zcode/prompt-design.md) 记录本机 ZCode 3.17.2 的提示词装配：内置提示词、`AGENTS.md` 发现规则、原生记忆与 ai-memory、Skill、MCP、Hooks、Plugins、Subagents 与 compaction，并给出 harness 映射与指令放置矩阵。文档区分已确认/推断/未知，并给出关键常量与复现命令。
 
 ## 添加一个新技能
 
@@ -135,6 +171,9 @@ test -s third-party/SOURCES.md && test -d third-party/licenses && echo "third-pa
 
 # 6. 清理构建产物
 find . -name '__pycache__' -o -name '*.pyc'
+
+# 7. zcode 可移植策略包自检（JSON/shell/链接/密钥/质量门禁回归）
+bash zcode/global-instruction/validate.sh
 ```
 
 ## 提交约定
@@ -154,6 +193,8 @@ find . -name '__pycache__' -o -name '*.pyc'
 Repository conventions for agents and contributors:
 
 - Root is a **container**, not a skill. Each `skills/<name>/` is independently distributable.
+- `zcode/global-instruction/` is a **portable** ZCode global-policy package: `AGENTS.md` (cross-project rules, no machine paths or exhaustive skill catalog), `SEDS.md`, `templates/` (machine profile, memory, MCP/hooks, quality gate, health check), `guides/` (spec workflow, worktree/binary conventions, cross-compile, mirrors, shared-machine builds, pitfalls), `validate.sh` (package self-check and quality-gate regression), and `archive/` (raw machine-specific ai-memory/jcode snapshots, not portable). The live `~/.zcode/AGENTS.md` is left unchanged and must not be overwritten by the repo copy. Machine facts belong in a per-machine `machine-profile.md`, not in the repo policy.
+- `zcode/prompt-design.md` documents the ZCode prompt architecture: built-in prompts, instruction-file discovery, native/ai-memory, skills, MCP, hooks, plugins, subagents and compaction, with evidence levels and reproduction commands.
 - `skills/` currently holds 1 first-party skill (`1panel-ops`), 126 licensed vendored third-party skills, and 14 skills with unconfirmed provenance/license (included at the owner's explicit request; see `third-party/UNVERIFIED.md`). Keep vendored content as upstream wrote it; provenance/versions/licenses live in `third-party/SOURCES.md` and `third-party/licenses/`. Never add a skill whose license or upstream is unclear without the owner's explicit approval.
 - **Never hardcode** machine-specific values (IPs, domains, ports, install paths) in **first-party** skills. Use placeholders resolved by detection scripts.
 - **Prefer APIs over generated files.** Document which files are generated and must not be hand-edited.

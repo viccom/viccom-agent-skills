@@ -19,6 +19,10 @@
 - 未收录的技能及原因见 [`third-party/EXCLUDED.md`](third-party/EXCLUDED.md)。
 
 > ⚠️ 上述 14 个技能没有明确许可。仓库是公开的，公开分发/再发布前请自行评估版权风险。
+>
+> 📁 另含 [`zcode/global-instruction/`](zcode/global-instruction/)：**可移植**的 ZCode 全局策略包（`AGENTS.md`、`SEDS.md`、`templates/`、`guides/`、`validate.sh`），供复制到其他机器使用；`archive/` 保留原始机器快照，非可移植。**不是可安装技能**，不含密钥。
+>
+> 📖 ZCode 提示词体系设计见 [`zcode/prompt-design.md`](zcode/prompt-design.md)：内置提示词、指令文件、记忆、Skill、MCP 的分层与预算，以及 harness 映射与指令放置矩阵。
 
 设计目标：
 
@@ -163,6 +167,10 @@ description: 一句话说明触发场景与能力（Agent 靠它决定是否加�
 A collection of self-contained AI agent skills following the `SKILL.md` convention. Drop a subdirectory into your agent's skills folder and it works — no dependency on the rest of this repo.
 
 The repository currently contains **141 skills**: 1 first-party (`1panel-ops`), 126 licensed third-party skills from 15 upstream projects, and 14 skills whose upstream/license could not be confirmed (included at the owner's request; see [`third-party/UNVERIFIED.md`](third-party/UNVERIFIED.md) for the copyright-risk note). Provenance, pinned versions and licenses for the licensed set are in [`third-party/SOURCES.md`](third-party/SOURCES.md); full license texts are in [`third-party/licenses/`](third-party/licenses/). Skills intentionally left out are listed in [`third-party/EXCLUDED.md`](third-party/EXCLUDED.md).
+
+It also contains [`zcode/global-instruction/`](zcode/global-instruction/) — a **portable** ZCode global-policy package (`AGENTS.md`, `SEDS.md`, `templates/`, `guides/`, `validate.sh`) intended for copying to other machines; `archive/` keeps raw machine-specific snapshots and is not portable. It is **not** an installable skill and contains no secrets.
+
+See [`zcode/prompt-design.md`](zcode/prompt-design.md) for the ZCode prompt architecture: built-in prompts, instruction-file discovery, memory, skills, MCP, hooks, plugins, subagents and compaction, plus a harness mapping and instruction-placement matrix.
 
 Design goals (first-party skills):
 

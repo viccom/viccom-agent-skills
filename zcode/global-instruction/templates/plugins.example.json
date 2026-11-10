@@ -1,0 +1,8 @@
+{
+  "plugins": {
+    "enabledPlugins": {
+      "example-plugin@example-marketplace": true,
+      "another-plugin@example-marketplace": false
+    }
+  }
+}

@@ -1,0 +1,110 @@
+{
+  "hooks": {
+    "enabled": true,
+    "maxOutputBytes": 65536,
+    "events": {
+      "SessionStart": [
+        {
+          "hooks": [
+            {
+              "type": "process",
+              "command": "<capture-command>",
+              "args": [
+                "hook",
+                "--event",
+                "session-start"
+              ],
+              "timeoutMs": 10000,
+              "statusMessage": "capture"
+            }
+          ]
+        }
+      ],
+      "UserPromptSubmit": [
+        {
+          "hooks": [
+            {
+              "type": "process",
+              "command": "<capture-command>",
+              "args": [
+                "hook",
+                "--event",
+                "user-prompt-submit"
+              ],
+              "timeoutMs": 10000,
+              "statusMessage": "capture"
+            }
+          ]
+        }
+      ],
+      "PreToolUse": [
+        {
+          "hooks": [
+            {
+              "type": "process",
+              "command": "<capture-command>",
+              "args": [
+                "hook",
+                "--event",
+                "pre-tool-use"
+              ],
+              "timeoutMs": 10000,
+              "statusMessage": "capture"
+            }
+          ]
+        }
+      ],
+      "PostToolUse": [
+        {
+          "hooks": [
+            {
+              "type": "process",
+              "command": "<capture-command>",
+              "args": [
+                "hook",
+                "--event",
+                "post-tool-use"
+              ],
+              "timeoutMs": 10000,
+              "statusMessage": "capture"
+            }
+          ]
+        }
+      ],
+      "PostToolUseFailure": [
+        {
+          "hooks": [
+            {
+              "type": "process",
+              "command": "<capture-command>",
+              "args": [
+                "hook",
+                "--event",
+                "post-tool-use"
+              ],
+              "timeoutMs": 10000,
+              "statusMessage": "capture"
+            }
+          ]
+        }
+      ],
+      "Stop": [
+        {
+          "hooks": [
+            {
+              "type": "process",
+              "command": "<capture-command>",
+              "args": [
+                "hook",
+                "--event",
+                "stop"
+              ],
+              "timeoutMs": 10000,
+              "statusMessage": "capture"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
