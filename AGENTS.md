@@ -30,6 +30,7 @@ viccom-agent-skills/
 │       └── archive/                       # 原始机器记忆快照（非可移植）
 ├── claude-code/         # Claude Code 提示词体系文档与可移植全局指令
 │   ├── prompt-design.md # Claude Code 2.1.322 提示词体系设计（版本相关，非可移植）
+│   ├── custom-provider-and-privileged-shell.md  # 自定义接入与高权限 shell（机器相关，非可移植）
 │   └── global-instruction/
 │       ├── CLAUDE.md                      # 可移植策略（本机 live 是适配版，勿覆盖）
 │       ├── SEDS.md
@@ -38,6 +39,17 @@ viccom-agent-skills/
 │       ├── templates/                     # machine-profile/auto-memory/MCP/hooks/plugins/门禁/体检
 │       ├── guides/                        # 与 zcode 包同源 6 篇（spec 工作流已适配 Claude 机制）
 │       └── archive/                       # 改写前本机 CLAUDE.md 快照（非可移植）
+├── codex/               # Codex 提示词体系文档与可移植全局指令
+│   ├── prompt-design.md # Codex 0.167.1 提示词体系设计（版本相关，非可移植）
+│   ├── custom-provider-and-privileged-shell.md  # 自定义 provider/模型目录与高权限 shell（机器相关，非可移植）
+│   └── global-instruction/
+│       ├── AGENTS.md                      # 可移植策略（本机 live 由包安装）
+│       ├── SEDS.md
+│       ├── README.md
+│       ├── validate.sh                    # 包自检（JSON/TOML/shell/链接/密钥/预算/门禁回归）
+│       ├── templates/                     # machine-profile/Memories/MCP/hooks/plugins/skill-routing/门禁/体检
+│       ├── guides/                        # 共享 6 篇 + Codex harness 观测
+│       └── archive/                       # 建立前状态说明（非可移植）
 └── skills/
     └── <skill-name>/   # 每个子目录 = 一个独立可分发的技能
         ├── SKILL.md
@@ -104,6 +116,38 @@ viccom-agent-skills/
 - 机器事实与技能路由放本机 `machine-profile.md` / `skill-routing.md`，不进包；`~/.claude/skill-routing.md` 与 `~/.zcode/skill-routing.md` 按宿主各自维护。
 - 改动本包后跑 `bash claude-code/global-instruction/validate.sh`。
 - 公开可见；**不得放入密钥、token 或凭据**；不要把 live `settings.json`（含真实 token）复制进包或模板。
+
+## Codex 提示词体系文档
+
+[`codex/prompt-design.md`](codex/prompt-design.md) 记录本机 Codex 0.167.1 的提示词装配：模型目录提供的 base instructions、WorldState 增量上下文、`AGENTS.md` root→cwd 指令链、Skill、MCP、Hooks、Plugins、Subagents、Memories、Compaction 与 Prompt Caching，并给出本机快照、harness 映射、常量与复现命令。文档区分已确认/推断/未知；版本相关、机器相关，不属于可移植包。
+
+## 自定义接入与高权限 Shell
+
+[`codex/custom-provider-and-privileged-shell.md`](codex/custom-provider-and-privileged-shell.md) 记录 Codex 的非官方 API 接入：`[model_providers.*]`、`base_url`/`env_key`/`wire_api`、`model_catalog_json` 目录字段、本机模型列表、验证与故障排查，以及 `codexx`（`--dangerously-bypass-approvals-and-sandbox`）别名能做什么、不能保证什么。含脱敏本机配置，不含 token；版本/机器相关，不属于可移植包。
+
+[`claude-code/custom-provider-and-privileged-shell.md`](claude-code/custom-provider-and-privileged-shell.md) 记录 Claude Code 2.1.322 的 Anthropic 兼容网关接入：`ANTHROPIC_BASE_URL`/`ANTHROPIC_AUTH_TOKEN`、模型别名映射、上下文/推理/超时变量、本机实测的环境变量优先级，以及 `claudex`（`--dangerously-skip-permissions`）的边界（root/sudo 会被拒绝、`--restricted` 会拒绝 bypass）。含脱敏配置，不含 token。
+
+两篇文档都记录了会话历史（Codex rollout / Claude JSONL）可能落明文凭据的风险、检测脚本与轮换/清理顺序。
+
+## Codex 全局指令与模板
+
+`codex/global-instruction/` 是**可移植**的 Codex 全局策略包，与 zcode/claude-code 包同源异构（核心行为策略一致；发现规则、记忆与配置模板按 Codex 机制适配）。不是技能，不随技能安装：
+
+- `AGENTS.md` —— 跨项目行为约束（优先级 / MUST 底线 / 工作流 / 完成定义 GATE / 调试熔断 / 沟通 / 能力路由 / Codex 指令发现 / 机器环境 / 工作流默认值）。
+- `SEDS.md` —— 项目级 `AGENTS.md` 十四段式模板（序言为 Codex 发现规则：全局 + root→cwd 拼接 / 同目录 override / 32 KiB 预算 / 不读 CLAUDE.md / 不懒加载）。
+- `README.md` —— 安装（最小/完整）/放置矩阵/新会话自检/卸载/维护/安全。
+- `validate.sh` —— 包自检：JSON/TOML/shell/链接/密钥 + 预算（≤240 行/20,000B）+ 无 `@` import + 无跨宿主引用 + 门禁回归。
+- `templates/` —— machine-profile、Memories、MCP TOML、hooks JSON、plugins TOML、skill-routing、精选技能安装脚本、`quality.just`、体检脚本。
+- `guides/` —— 共享 6 篇 + `codex-harness-inspection.md`。
+- `archive/` —— 建立本包前的状态说明，**非可移植**。
+
+维护规则：
+
+- **live 文件由包安装**：`~/.codex/AGENTS.md` 是包内 `AGENTS.md` 的副本；`~/.codex/global-instruction/` 保存完整包，`SEDS.md`/`guides`/`templates`/`validate.sh` 用软链。改全局策略先改包，再同步 live 副本。
+- **本机事实分离**：`~/.codex/machine-profile.md` 与 `~/.codex/skill-routing.md` 是本机文件，**不进仓库**；不要把主机、端口、token 写进 `AGENTS.md`。
+- **Codex 发现机制与 ZCode/Claude Code 不同**：全局 `AGENTS.override.md` → `AGENTS.md`；项目根→cwd 逐目录拼接；同目录 override 替换；项目链默认 32 KiB；提示词发现不读 `CLAUDE.md`、不支持 `@import`、子目录不懒加载。
+- 改动本包后跑 `bash codex/global-instruction/validate.sh`，再跑 8 个代表任务：全局规则、项目链/override、越权拒绝、完成门禁证据、Skill 触发、Hook 门禁、MCP 路由、压缩后重定位。
+- 公开可见；**不得放入密钥、token 或凭据**；不要把 live `config.toml`（可能含 provider 凭据配置）或 `machine-profile.md` 复制进包。
 
 ## 添加一个新技能
 
@@ -212,6 +256,9 @@ bash zcode/global-instruction/validate.sh
 
 # 8. claude-code 可移植策略包自检（JSON/shell/链接/密钥/预算/跨宿主引用/门禁回归）
 bash claude-code/global-instruction/validate.sh
+
+# 9. codex 可移植策略包自检（JSON/TOML/shell/链接/密钥/预算/门禁回归）
+bash codex/global-instruction/validate.sh
 ```
 
 ## 提交约定
@@ -234,6 +281,8 @@ Repository conventions for agents and contributors:
 - `zcode/global-instruction/` is a **portable** ZCode global-policy package: `AGENTS.md` (cross-project rules, no machine paths or exhaustive skill catalog), `SEDS.md`, `templates/` (machine profile, memory, MCP/hooks, quality gate, health check), `guides/` (spec workflow, worktree/binary conventions, cross-compile, mirrors, shared-machine builds, pitfalls), `validate.sh` (package self-check and quality-gate regression), and `archive/` (raw machine-specific ai-memory/jcode snapshots, not portable). The live `~/.zcode/AGENTS.md` is left unchanged and must not be overwritten by the repo copy. Machine facts belong in a per-machine `machine-profile.md`, not in the repo policy.
 - `zcode/prompt-design.md` documents the ZCode prompt architecture: built-in prompts, instruction-file discovery, native/ai-memory, skills, MCP, hooks, plugins, subagents and compaction, with evidence levels and reproduction commands.
 - `claude-code/global-instruction/` is a **portable** Claude Code global-policy package symmetric to the zcode one (same §0-§10 policy core; discovery rules, auto memory and config templates adapted to Claude Code mechanics). The live `~/.claude/CLAUDE.md` is the machine adaptation (package §0-§10 + local §11) and must not be overwritten by the repo copy. Claude Code concatenates every ancestor `CLAUDE.md` (not nearest-only), lazy-loads subdirectory files, and reads `CLAUDE.local.md` — see the package README for the placement matrix. Run `bash claude-code/global-instruction/validate.sh` after changes.
+- `codex/global-instruction/` is a **portable** Codex global-policy package adapted to Codex mechanics: `AGENTS.override.md`/`AGENTS.md` global precedence, root→cwd project chain, per-directory overrides, a 32 KiB project budget, no `CLAUDE.md` prompt discovery, no `@import`, and no subdirectory lazy loading. The live `~/.codex/AGENTS.md` is a copy of the package policy; machine facts live in `~/.codex/machine-profile.md` and `~/.codex/skill-routing.md`. Run `bash codex/global-instruction/validate.sh` after changes.
+- `codex/prompt-design.md` documents the Codex 0.167.1 prompt architecture: model-owned base instructions, incremental WorldState context, AGENTS.md discovery, skills, MCP, hooks, plugins, subagents, memories, compaction and prompt caching, with evidence levels and reproduction commands.
 - `skills/` currently holds 1 first-party skill (`1panel-ops`), 126 licensed vendored third-party skills, and 14 skills with unconfirmed provenance/license (included at the owner's explicit request; see `third-party/UNVERIFIED.md`). Keep vendored content as upstream wrote it; provenance/versions/licenses live in `third-party/SOURCES.md` and `third-party/licenses/`. Never add a skill whose license or upstream is unclear without the owner's explicit approval.
 - **Never hardcode** machine-specific values (IPs, domains, ports, install paths) in **first-party** skills. Use placeholders resolved by detection scripts.
 - **Prefer APIs over generated files.** Document which files are generated and must not be hand-edited.

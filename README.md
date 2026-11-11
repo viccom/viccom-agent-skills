@@ -24,9 +24,15 @@
 >
 > 📁 另含 [`claude-code/global-instruction/`](claude-code/global-instruction/)：**可移植**的 Claude Code 全局策略包（`CLAUDE.md`、`SEDS.md`、`templates/`、`guides/`、`validate.sh`），与 zcode 包同源异构（策略一致，发现规则与模板按 Claude Code 机制适配）；`archive/` 保留改写前本机快照，非可移植。**不是可安装技能**，不含密钥。
 >
+> 📁 另含 [`codex/global-instruction/`](codex/global-instruction/)：**可移植**的 Codex 全局策略包（`AGENTS.md`、`SEDS.md`、`templates/`、`guides/`、`validate.sh`），按 Codex 的 root→cwd 指令链、WorldState、Skills/MCP/hooks/plugins/memories 机制适配；`archive/` 记录建立前状态，非可移植。**不是可安装技能**，不含密钥。
+>
 > 📖 ZCode 提示词体系设计见 [`zcode/prompt-design.md`](zcode/prompt-design.md)：内置提示词、指令文件、记忆、Skill、MCP 的分层与预算，以及 harness 映射与指令放置矩阵。
 >
 > 📖 Claude Code 提示词体系设计见 [`claude-code/prompt-design.md`](claude-code/prompt-design.md)：2.1.322 的请求分层、内置提示词、CLAUDE.md/AGENTS.md/rules、auto memory、Skill、MCP、Hooks、Plugins、Subagents、Compaction 与缓存，并附本机快照与复现命令。
+>
+> 📖 Codex 提示词体系设计见 [`codex/prompt-design.md`](codex/prompt-design.md)：0.167.1 的模型 base instructions、WorldState 增量上下文、AGENTS.md、Skill、MCP、Hooks、Plugins、Subagents、Memories、Compaction 与 Prompt Caching，并附本机快照与复现命令。
+>
+> 📖 自定义接入与高权限 Shell：Codex 见 [`codex/custom-provider-and-privileged-shell.md`](codex/custom-provider-and-privileged-shell.md)，Claude Code 见 [`claude-code/custom-provider-and-privileged-shell.md`](claude-code/custom-provider-and-privileged-shell.md)。两篇说明非官方 API/模型配置、本机接入点、验证方法、`codexx`/`claudex` 别名的真实边界与回退方法。
 
 设计目标：
 
@@ -176,9 +182,15 @@ It also contains [`zcode/global-instruction/`](zcode/global-instruction/) — a 
 
 It also contains [`claude-code/global-instruction/`](claude-code/global-instruction/) — a **portable** Claude Code global-policy package (`CLAUDE.md`, `SEDS.md`, `templates/`, `guides`, `validate.sh`), symmetric to the ZCode package (same policy core, discovery rules and templates adapted to Claude Code mechanics); `archive/` keeps the pre-rewrite machine snapshot and is not portable. Not an installable skill; no secrets.
 
+It also contains [`codex/global-instruction/`](codex/global-instruction/) — a **portable** Codex global-policy package (`AGENTS.md`, `SEDS.md`, `templates/`, `guides`, `validate.sh`) adapted to Codex's root→cwd instruction chain, WorldState, skills, MCP, hooks, plugins and memories; `archive/` records the pre-package state and is not portable. Not an installable skill; no secrets.
+
 See [`zcode/prompt-design.md`](zcode/prompt-design.md) for the ZCode prompt architecture: built-in prompts, instruction-file discovery, memory, skills, MCP, hooks, plugins, subagents and compaction, plus a harness mapping and instruction-placement matrix.
 
 See [`claude-code/prompt-design.md`](claude-code/prompt-design.md) for the Claude Code 2.1.322 prompt architecture: request layers, built-in prompts, CLAUDE.md/AGENTS.md/rules discovery, auto memory, skills, MCP, hooks, plugins, subagents, compaction and caching, with a machine snapshot and reproduction commands.
+
+See [`codex/prompt-design.md`](codex/prompt-design.md) for the Codex 0.167.1 prompt architecture: model-owned base instructions, incremental WorldState context, AGENTS.md, skills, MCP, hooks, plugins, subagents, memories, compaction and prompt caching, with a machine snapshot and reproduction commands.
+
+See [`codex/custom-provider-and-privileged-shell.md`](codex/custom-provider-and-privileged-shell.md) and [`claude-code/custom-provider-and-privileged-shell.md`](claude-code/custom-provider-and-privileged-shell.md) for non-official API/model gateways, local model catalogs, validation steps, and the real limits of the `codexx`/`claudex` high-privilege shell aliases.
 
 Design goals (first-party skills):
 
