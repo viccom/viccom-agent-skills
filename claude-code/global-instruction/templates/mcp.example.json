@@ -1,0 +1,22 @@
+{
+  "_comment": "Claude Code MCP 配置结构示例（脱敏占位符）。项目级放仓库根 .mcp.json（进版本库需团队信任评审）；用户级用 `claude mcp add --scope user <name> -- <command>` 写入 ~/.claude.json。本文件是结构参考，不是可直接落地的配置。",
+  "mcpServers": {
+    "example-http": {
+      "type": "http",
+      "url": "https://<mcp-host>/mcp",
+      "headers": {
+        "Authorization": "Bearer <REDACTED>"
+      },
+      "timeoutMs": 30000
+    },
+    "example-stdio": {
+      "type": "stdio",
+      "command": "<command>",
+      "args": ["--serve"],
+      "env": {
+        "API_KEY": "<REDACTED>"
+      },
+      "timeoutMs": 30000
+    }
+  }
+}

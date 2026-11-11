@@ -28,6 +28,15 @@ viccom-agent-skills/
 │       ├── templates/                     # 机器 profile/记忆/MCP/hooks/门禁/体检
 │       ├── guides/                        # 工作流/交叉编译/镜像/编译资源/坑
 │       └── archive/                       # 原始机器记忆快照（非可移植）
+├── claude-code/         # Claude Code 可移植全局指令（与 zcode 包同源异构）
+│   └── global-instruction/
+│       ├── CLAUDE.md                      # 可移植策略（本机 live 是适配版，勿覆盖）
+│       ├── SEDS.md
+│       ├── README.md
+│       ├── validate.sh                    # 包自检（含预算与跨宿主引用检查）
+│       ├── templates/                     # machine-profile/auto-memory/MCP/hooks/plugins/门禁/体检
+│       ├── guides/                        # 与 zcode 包同源 6 篇（spec 工作流已适配 Claude 机制）
+│       └── archive/                       # 改写前本机 CLAUDE.md 快照（非可移植）
 └── skills/
     └── <skill-name>/   # 每个子目录 = 一个独立可分发的技能
         ├── SKILL.md
@@ -69,6 +78,27 @@ viccom-agent-skills/
 ## ZCode 提示词体系文档
 
 [`zcode/prompt-design.md`](zcode/prompt-design.md) 记录本机 ZCode 3.17.2 的提示词装配：内置提示词、`AGENTS.md` 发现规则、原生记忆与 ai-memory、Skill、MCP、Hooks、Plugins、Subagents 与 compaction，并给出 harness 映射与指令放置矩阵。文档区分已确认/推断/未知，并给出关键常量与复现命令。
+
+## Claude Code 全局指令与模板
+
+`claude-code/global-instruction/` 是**可移植**的 Claude Code 全局策略包，与 zcode 包**同源异构**（§0-§10 策略一致；发现规则、记忆与配置模板按 Claude Code 机制适配）。不是技能，不随技能安装：
+
+- `CLAUDE.md` —— 跨项目行为约束（十节：优先级表 / MUST 底线 / 工作流 / 完成定义 GATE / 调试熔断 / 沟通 / 能力路由 / CLAUDE.md 发现规则与 auto memory / 机器环境 / 工作流默认值）。
+- `SEDS.md` —— 项目级 `CLAUDE.md` 十四段式模板（序言为 Claude 发现规则：祖先链全量拼接 / 子目录懒加载 / `CLAUDE.local.md`）。
+- `README.md` —— 安装（最小/完整）/放置矩阵/新会话自检/卸载/维护（live 重建配方）/安全。
+- `validate.sh` —— 包自检：JSON/shell/链接/密钥 + 预算（≤200 行/14,000B）+ 无 `@` import + 无跨宿主引用 + 门禁回归。
+- `templates/` —— machine-profile、auto memory 说明、MCP/hooks/plugins **合并片段**示例、`quality.just`、体检脚本。
+- `guides/` —— 与 zcode 包同源 6 篇（`spec-driven-workflow.md` 已按 Claude 发现规则适配）。
+- `archive/` —— 改写前本机 `~/.claude/CLAUDE.md` 快照，**非可移植**。
+
+维护规则：
+
+- **本机 live 文件是适配版**：`~/.claude/CLAUDE.md` = 包 §0-§10（逐字一致）+ 本机头部声明 + §11 本机适配（`@RTK.md` import、编码团队情况、工作环境、落地物路径、Agent Comms）。**不要用仓库副本直接覆盖 live 文件**；改全局策略先改包，再同步 live 的 §0-§10。
+- **基线 Claude Code 2.1.259**（本机 `DISABLE_AUTOUPDATER=1` 锁定）：不直读 `AGENTS.md`（需 2.1.277+）、无 `/doctor prompt-audit`（需 2.1.283+）。机器升级跨过 2.1.277 时复核指令布局（届时仓库根 `AGENTS.md` 会被 Claude Code 注入，可能与项目 `CLAUDE.md` 叠加）。
+- Claude Code 加载机制与 ZCode 不同：cwd 到根**全链拼接**、子目录懒加载、`CLAUDE.local.md`、`~/.claude/rules/`（含 `paths:`）、auto memory 每仓库目录——放置规则见包 `README.md`，不要照搬 zcode 的"最近一个"结论。
+- 机器事实与技能路由放本机 `machine-profile.md` / `skill-routing.md`，不进包；`~/.claude/skill-routing.md` 与 `~/.zcode/skill-routing.md` 按宿主各自维护。
+- 改动本包后跑 `bash claude-code/global-instruction/validate.sh`。
+- 公开可见；**不得放入密钥、token 或凭据**；不要把 live `settings.json`（含真实 token）复制进包或模板。
 
 ## 添加一个新技能
 
@@ -174,6 +204,9 @@ find . -name '__pycache__' -o -name '*.pyc'
 
 # 7. zcode 可移植策略包自检（JSON/shell/链接/密钥/质量门禁回归）
 bash zcode/global-instruction/validate.sh
+
+# 8. claude-code 可移植策略包自检（JSON/shell/链接/密钥/预算/跨宿主引用/门禁回归）
+bash claude-code/global-instruction/validate.sh
 ```
 
 ## 提交约定
@@ -195,6 +228,7 @@ Repository conventions for agents and contributors:
 - Root is a **container**, not a skill. Each `skills/<name>/` is independently distributable.
 - `zcode/global-instruction/` is a **portable** ZCode global-policy package: `AGENTS.md` (cross-project rules, no machine paths or exhaustive skill catalog), `SEDS.md`, `templates/` (machine profile, memory, MCP/hooks, quality gate, health check), `guides/` (spec workflow, worktree/binary conventions, cross-compile, mirrors, shared-machine builds, pitfalls), `validate.sh` (package self-check and quality-gate regression), and `archive/` (raw machine-specific ai-memory/jcode snapshots, not portable). The live `~/.zcode/AGENTS.md` is left unchanged and must not be overwritten by the repo copy. Machine facts belong in a per-machine `machine-profile.md`, not in the repo policy.
 - `zcode/prompt-design.md` documents the ZCode prompt architecture: built-in prompts, instruction-file discovery, native/ai-memory, skills, MCP, hooks, plugins, subagents and compaction, with evidence levels and reproduction commands.
+- `claude-code/global-instruction/` is a **portable** Claude Code global-policy package symmetric to the zcode one (same §0-§10 policy core; discovery rules, auto memory and config templates adapted to Claude Code mechanics). The live `~/.claude/CLAUDE.md` is the machine adaptation (package §0-§10 + local §11) and must not be overwritten by the repo copy. Claude Code concatenates every ancestor `CLAUDE.md` (not nearest-only), lazy-loads subdirectory files, and reads `CLAUDE.local.md` — see the package README for the placement matrix. Run `bash claude-code/global-instruction/validate.sh` after changes.
 - `skills/` currently holds 1 first-party skill (`1panel-ops`), 126 licensed vendored third-party skills, and 14 skills with unconfirmed provenance/license (included at the owner's explicit request; see `third-party/UNVERIFIED.md`). Keep vendored content as upstream wrote it; provenance/versions/licenses live in `third-party/SOURCES.md` and `third-party/licenses/`. Never add a skill whose license or upstream is unclear without the owner's explicit approval.
 - **Never hardcode** machine-specific values (IPs, domains, ports, install paths) in **first-party** skills. Use placeholders resolved by detection scripts.
 - **Prefer APIs over generated files.** Document which files are generated and must not be hand-edited.

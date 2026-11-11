@@ -1,0 +1,49 @@
+{
+  "_comment": "Claude Code hooks 配置结构示例（settings.json 的合并片段，非独立落地文件）。hooks 在 settings.json 的 hooks 键下按事件分组，每个事件是 [matcher 组] 数组。完整事件：PreToolUse / PostToolUse / UserPromptSubmit / SessionStart / SessionEnd / Stop / SubagentStop / PreCompact。hook 是本地代码执行：安装前审查命令与来源；项目级 settings 里的 hooks 需目录信任后才生效。密钥走 env，不写在命令行。",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "<command> --event pre-tool-use",
+            "timeout": 10,
+            "statusMessage": "checking..."
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "<command> --event post-tool-use"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "<command> --event session-start"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "<command> --event stop"
+          }
+        ]
+      }
+    ]
+  }
+}

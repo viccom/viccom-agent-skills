@@ -1,0 +1,7 @@
+{
+  "_comment": "Claude Code 插件启用清单示例（settings.json 的合并片段）。键为 '插件@marketplace'，值为 true/false。能力变更对新会话生效。只启用经过来源审查的插件。",
+  "enabledPlugins": {
+    "<plugin>@<marketplace>": true,
+    "<other-plugin>@claude-plugins-official": false
+  }
+}
