@@ -2,7 +2,7 @@
 
 本目录是一套**可移植**的 Claude Code 全局指令包：策略、模板与指南分开，复制到其他电脑时只取需要的部分。
 
-- 基线 Claude Code 2.1.259；`AGENTS.md` 直读需 ≥2.1.277、`/doctor prompt-audit` 需 ≥2.1.283（本包不依赖这两项）。升级跨过 2.1.277 后复核指令文件布局：仓库根的 `AGENTS.md` 可能开始被注入，与项目 `CLAUDE.md` 叠加。
+- 包最低验证版本 Claude Code 2.1.259；本机当前 2.1.322。`AGENTS.md` 直读需 ≥2.1.277、`/doctor prompt-audit` 需 ≥2.1.283（本包不依赖这两项）。2.1.322 已直读 `AGENTS.md`：仓库根的 `AGENTS.md` 会被注入，与项目 `CLAUDE.md` 叠加；指令布局变更按 [`../prompt-design.md`](../prompt-design.md) §3 复核。
 - 不依赖 MCP、记忆服务；不含 token、API key、密码。
 - `~/.claude` 指 Claude Code 用户配置目录；Windows 通常为 `%USERPROFILE%\.claude`。
 - 安装命令以 Linux/macOS（或 WSL/Git Bash）为例；`validate.sh`、`env-check.example.sh`、`quality.just` 依赖 Bash/just。

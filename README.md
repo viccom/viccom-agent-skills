@@ -25,6 +25,8 @@
 > 📁 另含 [`claude-code/global-instruction/`](claude-code/global-instruction/)：**可移植**的 Claude Code 全局策略包（`CLAUDE.md`、`SEDS.md`、`templates/`、`guides/`、`validate.sh`），与 zcode 包同源异构（策略一致，发现规则与模板按 Claude Code 机制适配）；`archive/` 保留改写前本机快照，非可移植。**不是可安装技能**，不含密钥。
 >
 > 📖 ZCode 提示词体系设计见 [`zcode/prompt-design.md`](zcode/prompt-design.md)：内置提示词、指令文件、记忆、Skill、MCP 的分层与预算，以及 harness 映射与指令放置矩阵。
+>
+> 📖 Claude Code 提示词体系设计见 [`claude-code/prompt-design.md`](claude-code/prompt-design.md)：2.1.322 的请求分层、内置提示词、CLAUDE.md/AGENTS.md/rules、auto memory、Skill、MCP、Hooks、Plugins、Subagents、Compaction 与缓存，并附本机快照与复现命令。
 
 设计目标：
 
@@ -175,6 +177,8 @@ It also contains [`zcode/global-instruction/`](zcode/global-instruction/) — a 
 It also contains [`claude-code/global-instruction/`](claude-code/global-instruction/) — a **portable** Claude Code global-policy package (`CLAUDE.md`, `SEDS.md`, `templates/`, `guides`, `validate.sh`), symmetric to the ZCode package (same policy core, discovery rules and templates adapted to Claude Code mechanics); `archive/` keeps the pre-rewrite machine snapshot and is not portable. Not an installable skill; no secrets.
 
 See [`zcode/prompt-design.md`](zcode/prompt-design.md) for the ZCode prompt architecture: built-in prompts, instruction-file discovery, memory, skills, MCP, hooks, plugins, subagents and compaction, plus a harness mapping and instruction-placement matrix.
+
+See [`claude-code/prompt-design.md`](claude-code/prompt-design.md) for the Claude Code 2.1.322 prompt architecture: request layers, built-in prompts, CLAUDE.md/AGENTS.md/rules discovery, auto memory, skills, MCP, hooks, plugins, subagents, compaction and caching, with a machine snapshot and reproduction commands.
 
 Design goals (first-party skills):
 

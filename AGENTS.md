@@ -28,7 +28,8 @@ viccom-agent-skills/
 │       ├── templates/                     # 机器 profile/记忆/MCP/hooks/门禁/体检
 │       ├── guides/                        # 工作流/交叉编译/镜像/编译资源/坑
 │       └── archive/                       # 原始机器记忆快照（非可移植）
-├── claude-code/         # Claude Code 可移植全局指令（与 zcode 包同源异构）
+├── claude-code/         # Claude Code 提示词体系文档与可移植全局指令
+│   ├── prompt-design.md # Claude Code 2.1.322 提示词体系设计（版本相关，非可移植）
 │   └── global-instruction/
 │       ├── CLAUDE.md                      # 可移植策略（本机 live 是适配版，勿覆盖）
 │       ├── SEDS.md
@@ -79,6 +80,10 @@ viccom-agent-skills/
 
 [`zcode/prompt-design.md`](zcode/prompt-design.md) 记录本机 ZCode 3.17.2 的提示词装配：内置提示词、`AGENTS.md` 发现规则、原生记忆与 ai-memory、Skill、MCP、Hooks、Plugins、Subagents 与 compaction，并给出 harness 映射与指令放置矩阵。文档区分已确认/推断/未知，并给出关键常量与复现命令。
 
+## Claude Code 提示词体系文档
+
+[`claude-code/prompt-design.md`](claude-code/prompt-design.md) 记录本机 Claude Code 2.1.322 的提示词装配：内置提示词、`CLAUDE.md`/`AGENTS.md`/rules 发现规则、auto memory、Skill、MCP、Hooks、Plugins、Subagents、Compaction 与 Prompt Caching，并给出本机请求快照、harness 映射、常量与复现命令。文档区分已确认/推断/未知；版本相关、机器相关，不属于可移植包。
+
 ## Claude Code 全局指令与模板
 
 `claude-code/global-instruction/` 是**可移植**的 Claude Code 全局策略包，与 zcode 包**同源异构**（§0-§10 策略一致；发现规则、记忆与配置模板按 Claude Code 机制适配）。不是技能，不随技能安装：
@@ -94,7 +99,7 @@ viccom-agent-skills/
 维护规则：
 
 - **本机 live 文件是适配版**：`~/.claude/CLAUDE.md` = 包 §0-§10（逐字一致）+ 本机头部声明 + §11 本机适配（`@RTK.md` import、编码团队情况、工作环境、落地物路径、Agent Comms）。**不要用仓库副本直接覆盖 live 文件**；改全局策略先改包，再同步 live 的 §0-§10。
-- **基线 Claude Code 2.1.259**（本机 `DISABLE_AUTOUPDATER=1` 锁定）：不直读 `AGENTS.md`（需 2.1.277+）、无 `/doctor prompt-audit`（需 2.1.283+）。机器升级跨过 2.1.277 时复核指令布局（届时仓库根 `AGENTS.md` 会被 Claude Code 注入，可能与项目 `CLAUDE.md` 叠加）。
+- **基线 Claude Code 2.1.322**（本机当前；包最低验证版本仍为 2.1.259）：2.1.322 已直读 `AGENTS.md`（2.1.277+），并有 `/doctor prompt-audit`（2.1.283+）。仓库根 `AGENTS.md` 会被注入，可能与项目 `CLAUDE.md` 叠加；改动指令布局时按 [`claude-code/prompt-design.md`](claude-code/prompt-design.md) §3 复核。
 - Claude Code 加载机制与 ZCode 不同：cwd 到根**全链拼接**、子目录懒加载、`CLAUDE.local.md`、`~/.claude/rules/`（含 `paths:`）、auto memory 每仓库目录——放置规则见包 `README.md`，不要照搬 zcode 的"最近一个"结论。
 - 机器事实与技能路由放本机 `machine-profile.md` / `skill-routing.md`，不进包；`~/.claude/skill-routing.md` 与 `~/.zcode/skill-routing.md` 按宿主各自维护。
 - 改动本包后跑 `bash claude-code/global-instruction/validate.sh`。
