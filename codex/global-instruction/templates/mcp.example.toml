@@ -1,0 +1,32 @@
+# Codex MCP 配置结构示例（脱敏占位符）。
+# 合并进 $CODEX_HOME/config.toml；项目级可放 <repo>/.codex/config.toml（仅受信任项目）。
+# 不要直接使用占位符；真实 token 只通过环境变量或 0600 文件提供。
+
+# Streamable HTTP server
+[mcp_servers.example_http]
+url = "https://<mcp-host>/mcp"
+bearer_token_env_var = "EXAMPLE_MCP_TOKEN"
+# http_headers = { "X-Example-Region" = "<region>" }
+# env_http_headers = { "X-Example-Tenant" = "EXAMPLE_TENANT" }
+startup_timeout_sec = 10
+tool_timeout_sec = 60
+enabled = true
+required = false
+enabled_tools = ["search", "read"]
+disabled_tools = ["delete"]
+default_tools_approval_mode = "prompt"
+
+# STDIO server
+[mcp_servers.example_stdio]
+command = "<command>"
+args = ["--serve"]
+cwd = "<working-directory>"
+env_vars = ["LOCAL_TOKEN"]
+# env = { EXAMPLE_ENV = "<REDACTED>" }
+startup_timeout_sec = 10
+tool_timeout_sec = 60
+enabled = true
+required = false
+
+[mcp_servers.example_stdio.tools.read]
+approval_mode = "approve"

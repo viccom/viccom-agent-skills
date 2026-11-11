@@ -1,0 +1,65 @@
+{
+  "description": "Codex hooks 配置结构示例；合并进 $CODEX_HOME/hooks.json 或 config.toml 的 [hooks]。非托管 hook 运行前需审查/信任。",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "<command> --event session-start",
+            "statusMessage": "loading session context",
+            "additionalContextLimit": 5000
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "<command> --event user-prompt-submit",
+            "additionalContextLimit": 5000
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "<command> --event pre-tool-use",
+            "timeout": 30,
+            "statusMessage": "checking command"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "<command> --event post-tool-use",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "<command> --event stop",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}

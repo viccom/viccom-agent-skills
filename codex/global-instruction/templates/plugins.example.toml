@@ -1,0 +1,18 @@
+# Codex 插件启用与工具策略示例（脱敏占位符）。
+# 合并进 $CODEX_HOME/config.toml；插件能力通常对新会话生效。
+# 只启用经过来源/权限审查的插件。
+
+[plugins._default]
+enabled = false
+
+[plugins."example@marketplace"]
+enabled = true
+
+[plugins."example@marketplace".mcp_servers.example]
+enabled = true
+default_tools_approval_mode = "prompt"
+enabled_tools = ["search", "read"]
+disabled_tools = ["delete"]
+
+[plugins."example@marketplace".mcp_servers.example.tools.search]
+approval_mode = "approve"
