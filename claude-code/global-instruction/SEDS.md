@@ -2,6 +2,7 @@
 
 > 用于生成项目级 `CLAUDE.md`。Claude Code 会把 cwd 到根**每一级**的 `CLAUDE.md`/`CLAUDE.local.md` 全量拼接注入（近 cwd 者后读），
 > 子目录 `CLAUDE.md` 在读到该子目录文件时懒加载。项目规则放仓库根 `CLAUDE.md`；个人不入库的偏好用 `CLAUDE.local.md`（gitignore）。
+> 2.1.277+ 还会读 `AGENTS.md`：默认 `claude-md-or-agents-md` 下，cwd/祖先没有 `CLAUDE.md`/`CLAUDE.local.md` 时读 `AGENTS.md`；有则只读 CLAUDE.md 系；不要同时维护两份冲突规则。
 > 填入项目实际信息后删除不适用段落；不要保留占位符。
 
 ## 项目信息

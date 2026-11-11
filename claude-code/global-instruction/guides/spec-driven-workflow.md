@@ -36,7 +36,7 @@ spec（写清可验证的验收标准，经用户确认）
 
 ## 项目初始化（新项目第一步）
 
-1. 生成项目级 `CLAUDE.md`：用包内的 `../SEDS.md` 十四段式模板，填项目实际信息。以 `CLAUDE.md` 为权威源；若项目还要服务读 `AGENTS.md` 的其他 Agent，把 `AGENTS.md` 软链到这份 `CLAUDE.md`（或反过来让 `CLAUDE.md` 用 `@AGENTS.md` 导入共享文件），避免两份规则漂移。
+1. 生成项目级 `CLAUDE.md`：用包内的 `../SEDS.md` 十四段式模板，填项目实际信息。以 `CLAUDE.md` 为权威源；Claude Code 2.1.277+ 也直读 `AGENTS.md`，但默认有 `CLAUDE.md` 时只读 CLAUDE.md 系。若项目还要服务其他读 `AGENTS.md` 的 Agent，把 `AGENTS.md` 软链到这份 `CLAUDE.md`（或反过来让 `CLAUDE.md` 用 `@AGENTS.md` 导入共享文件），避免两份规则漂移。
 2. 接入质量门禁：在 `justfile` 加一行：
 
    ```just

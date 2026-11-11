@@ -2,7 +2,7 @@
 
 本目录是一套**可移植**的 Claude Code 全局指令包：策略、模板与指南分开，复制到其他电脑时只取需要的部分。
 
-- 包最低验证版本 Claude Code 2.1.259；本机当前 2.1.322。`AGENTS.md` 直读需 ≥2.1.277、`/doctor prompt-audit` 需 ≥2.1.283（本包不依赖这两项）。2.1.322 已直读 `AGENTS.md`：仓库根的 `AGENTS.md` 会被注入，与项目 `CLAUDE.md` 叠加；指令布局变更按 [`../prompt-design.md`](../prompt-design.md) §3 复核。
+- 包最低验证版本 Claude Code 2.1.259；当前维护基线 2.1.322。`AGENTS.md` 直读需 ≥2.1.277、`/doctor prompt-audit` 需 ≥2.1.283（本包不依赖这两项）。2.1.322 默认 `claude-md-or-agents-md`：cwd/祖先无 `CLAUDE.md`/`CLAUDE.local.md` 时读 `AGENTS.md`，有则只读 CLAUDE.md 系；本仓库（viccom-agent-skills）无项目 `CLAUDE.md`，所以根 `AGENTS.md` 会被注入。完整说明见仓库 `claude-code/prompt-design.md` §3（不在本包内，复制后不可用）。
 - 不依赖 MCP、记忆服务；不含 token、API key、密码。
 - `~/.claude` 指 Claude Code 用户配置目录；Windows 通常为 `%USERPROFILE%\.claude`。
 - 安装命令以 Linux/macOS（或 WSL/Git Bash）为例；`validate.sh`、`env-check.example.sh`、`quality.just` 依赖 Bash/just。
@@ -70,12 +70,12 @@ ln -sfn ~/.claude/global-instruction/templates ~/.claude/templates
 
 ## 规则放哪里
 
-Claude Code 会加载 `~/.claude/CLAUDE.md` + cwd 到根**每一级**的 `CLAUDE.md`/`CLAUDE.local.md`（全量拼接，近 cwd 者后读）；子目录 `CLAUDE.md` 懒加载；`@import` 不省 token。
+Claude Code 会加载 `~/.claude/CLAUDE.md` + cwd 到根**每一级**的 `CLAUDE.md`/`CLAUDE.local.md`（全量拼接，近 cwd 者后读）；子目录 `CLAUDE.md` 懒加载；`@import` 不省 token。2.1.277+ 还会读 `AGENTS.md`：默认 `claude-md-or-agents-md` 下，cwd/祖先没有 `CLAUDE.md`/`CLAUDE.local.md` 时读 `AGENTS.md`；有则只读 CLAUDE.md 系；可在 `/config` → Project instructions 切换 `claude-md-and-agents-md`/`claude-md`/`managed-only`。
 
 | 规则类型 | 放置位置 | 是否自动进上下文 |
 |---|---|---|
 | 跨项目行为底线 | `~/.claude/CLAUDE.md` | 是，所有项目 |
-| 项目构建/测试/架构 | 仓库根 `CLAUDE.md` | 是（祖先链每级都叠加） |
+| 项目构建/测试/架构 | 仓库根 `CLAUDE.md` 或 `AGENTS.md` | 是（祖先链每级都叠加；默认有 CLAUDE.md 时跳过 AGENTS.md） |
 | 子目录模块规则 | 子目录 `CLAUDE.md` 或并入仓库根 | 懒加载（读到该子目录文件时） |
 | 个人不入库偏好 | `CLAUDE.local.md`（gitignore） | 是，仅本机 |
 | 路径专属规则 | `.claude/rules/*.md` + `paths:` | 命中文件操作时 |

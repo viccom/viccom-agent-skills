@@ -1,9 +1,9 @@
 <!-- 维护注记（HTML 注释注入前被剥离，不占上下文）：可移植全局策略，与仓库内另一宿主的同源策略包对应。
-     §7 发现规则以 Claude Code 官方 memory 文档 2026-11-10 版为准；基线 2.1.259。live 适配版在 ~/.claude/CLAUDE.md（含 §11），勿用本文件覆盖它。 -->
+     §7 发现规则以 Claude Code 官方 memory 文档 2026-11-11 版为准；包最低验证 2.1.259，当前维护基线 2.1.322。live 适配版在 ~/.claude/CLAUDE.md（含 §11），勿用本文件覆盖它。 -->
 
 # 全局 Coding Agent 行为约束（Claude Code）
 
-> 基线 Claude Code 2.1.259；升过 2.1.277 后 `AGENTS.md` 可被直读，需复核指令文件布局。
+> 包最低验证 2.1.259；当前维护基线 2.1.322。2.1.277+ 直读 `AGENTS.md`；有项目 `CLAUDE.md` 时默认只读 CLAUDE.md 系。
 > 跨项目默认策略：项目级 `CLAUDE.md` 补充项目事实；机器事实放 `machine-profile.md`；本文件不含本机路径、技能目录或凭据，不依赖 MCP/记忆服务。
 
 ## 0. 优先级与可协商性
@@ -102,14 +102,14 @@
 - `@import` 的文件随本文件全量进上下文，**不省 token**；用户级 import 免审批，用户文件不要 import 仓库控制的内容。
 - `~/.claude/rules/*.md` 每会话加载（先于项目规则）；带 `paths:` 的只在读/写/编辑匹配文件时加载。
 - `/compact` 后仅项目根 `CLAUDE.md` 从磁盘重读重注入；嵌套与路径规则按需重载；会话内口头指令不保留，重要约定要落盘。
-- 基线 2.1.259 不直读 `AGENTS.md`（需 2.1.277+）；多工具仓库用 `CLAUDE.md` 内 `@AGENTS.md` 导入或软链共享。
+- `AGENTS.md`：2.1.277+ 直读；更早版本用 `@AGENTS.md` 导入或软链。默认仅在 cwd/祖先无 `CLAUDE.md`/`CLAUDE.local.md` 时加载，有则只读 CLAUDE.md 系；`/config` → Project instructions 可切换。
 
 **放置矩阵**：
 
 | 规则类型 | 放哪里 |
 |---|---|
 | 跨项目行为底线 | `~/.claude/CLAUDE.md` |
-| 项目构建/测试/架构 | 仓库根 `CLAUDE.md`（祖先链叠加，避免重复/冲突） |
+| 项目构建/测试/架构 | 仓库根 `CLAUDE.md` 或 `AGENTS.md`（二选一；默认有 CLAUDE.md 时跳过 AGENTS.md） |
 | 子目录模块规则 | 子目录 `CLAUDE.md`（懒加载）或并入仓库根 |
 | 个人不入库偏好 | `CLAUDE.local.md`（gitignore） |
 | 路径专属规则 | `.claude/rules/*.md` + `paths:` |
