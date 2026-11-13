@@ -8,6 +8,8 @@
 - `~/.zcode` 指 ZCode 用户配置目录；Windows 通常为 `%USERPROFILE%\.zcode`。
 - 安装命令以 Linux/macOS（或 WSL/Git Bash）为例；`validate.sh`、`templates/env-check.example.sh`、`templates/quality.just` 依赖 Bash/just，Windows 原生环境可只用文本文件。
 
+> ⚠️ 覆盖前确认：`~/.zcode/AGENTS.md` 若已按本机改过（记忆服务路由、机器路径、技能目录等），**不要**用本包的 `AGENTS.md` 直接覆盖它。本包给的是可移植策略；本机适配请自行合并，或把本包放在独立目录只作参考。
+
 ## 目录
 
 ```text
@@ -19,6 +21,8 @@ global-instruction/
 ├── guides/                   # 可移植流程与排查指南
 │   ├── spec-driven-workflow.md
 │   ├── workflow-conventions.md
+│   ├── anti-rationalizations.md
+│   ├── skill-authoring.md
 │   ├── cross-compile-windows-rust.md
 │   ├── network-mirrors-cn.md
 │   ├── shared-machine-build-policy.md

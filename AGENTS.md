@@ -26,7 +26,7 @@ viccom-agent-skills/
 │       ├── README.md
 │       ├── validate.sh                    # 包自检（JSON/shell/链接/密钥/门禁回归）
 │       ├── templates/                     # 机器 profile/记忆/MCP/hooks/门禁/体检
-│       ├── guides/                        # 工作流/交叉编译/镜像/编译资源/坑
+│       ├── guides/                        # 工作流/反理性化/skill 编写/交叉编译/镜像/编译资源/坑
 │       └── archive/                       # 原始机器记忆快照（非可移植）
 ├── claude-code/         # Claude Code 提示词体系文档与可移植全局指令
 │   ├── prompt-design.md # Claude Code 2.1.322 提示词体系设计（版本相关，非可移植）
@@ -75,7 +75,7 @@ viccom-agent-skills/
 - `README.md` —— 安装/复制/维护说明。
 - `validate.sh` —— 包自检：JSON/shell/链接/密钥/质量门禁回归。
 - `templates/` —— 机器 profile、原生记忆、MCP/hooks、质量门禁、体检脚本模板。
-- `guides/` —— spec 工作流、workflow 约定、交叉编译、国内镜像、共享机编译策略、通用坑。
+- `guides/` —— spec 工作流、workflow 约定、反理性化表、skill 编写规范、交叉编译、国内镜像、共享机编译策略、通用坑（8 篇）。
 - `archive/` —— 原始 ai-memory/jcode 机器快照，**非可移植**，仅供追溯。
 
 维护规则：
@@ -278,7 +278,7 @@ bash codex/global-instruction/validate.sh
 Repository conventions for agents and contributors:
 
 - Root is a **container**, not a skill. Each `skills/<name>/` is independently distributable.
-- `zcode/global-instruction/` is a **portable** ZCode global-policy package: `AGENTS.md` (cross-project rules, no machine paths or exhaustive skill catalog), `SEDS.md`, `templates/` (machine profile, memory, MCP/hooks, quality gate, health check), `guides/` (spec workflow, worktree/binary conventions, cross-compile, mirrors, shared-machine builds, pitfalls), `validate.sh` (package self-check and quality-gate regression), and `archive/` (raw machine-specific ai-memory/jcode snapshots, not portable). The live `~/.zcode/AGENTS.md` is left unchanged and must not be overwritten by the repo copy. Machine facts belong in a per-machine `machine-profile.md`, not in the repo policy.
+- `zcode/global-instruction/` is a **portable** ZCode global-policy package: `AGENTS.md` (cross-project rules, no machine paths or exhaustive skill catalog), `SEDS.md`, `templates/` (machine profile, memory, MCP/hooks, quality gate, health check), `guides/` (spec workflow, worktree/binary conventions, anti-rationalizations, skill authoring, cross-compile, mirrors, shared-machine builds, pitfalls), `validate.sh` (package self-check and quality-gate regression), and `archive/` (raw machine-specific ai-memory/jcode snapshots, not portable). The live `~/.zcode/AGENTS.md` is left unchanged and must not be overwritten by the repo copy. Machine facts belong in a per-machine `machine-profile.md`, not in the repo policy.
 - `zcode/prompt-design.md` documents the ZCode prompt architecture: built-in prompts, instruction-file discovery, native/ai-memory, skills, MCP, hooks, plugins, subagents and compaction, with evidence levels and reproduction commands.
 - `claude-code/global-instruction/` is a **portable** Claude Code global-policy package symmetric to the zcode one (same §0-§10 policy core; discovery rules, auto memory and config templates adapted to Claude Code mechanics). The live `~/.claude/CLAUDE.md` is the machine adaptation (package §0-§10 + local §11) and must not be overwritten by the repo copy. Claude Code concatenates every ancestor `CLAUDE.md` (not nearest-only), lazy-loads subdirectory files, and reads `CLAUDE.local.md` — see the package README for the placement matrix. Run `bash claude-code/global-instruction/validate.sh` after changes.
 - `codex/global-instruction/` is a **portable** Codex global-policy package adapted to Codex mechanics: `AGENTS.override.md`/`AGENTS.md` global precedence, root→cwd project chain, per-directory overrides, a 32 KiB project budget, no `CLAUDE.md` prompt discovery, no `@import`, and no subdirectory lazy loading. The live `~/.codex/AGENTS.md` is a copy of the package policy; machine facts live in `~/.codex/machine-profile.md` and `~/.codex/skill-routing.md`. Run `bash codex/global-instruction/validate.sh` after changes.
