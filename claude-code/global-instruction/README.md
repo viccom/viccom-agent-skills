@@ -6,7 +6,7 @@
 - 不依赖 MCP、记忆服务；不含 token、API key、密码。
 - `~/.claude` 指 Claude Code 用户配置目录；Windows 通常为 `%USERPROFILE%\.claude`。
 - 安装命令以 Linux/macOS（或 WSL/Git Bash）为例；`validate.sh`、`env-check.example.sh`、`quality.just` 依赖 Bash/just。
-- 预算：官方建议每个 `CLAUDE.md` <200 行；本包 `CLAUDE.md` 上限 200 行 / 14,000 字节，由 `validate.sh` 强制。
+- 预算：官方建议每个 `CLAUDE.md` <200 行；本包 `CLAUDE.md` 上限 200 行 / 18,000 字节（同步 zcode/codex 策略升级后由 14,000B 放宽），由 `validate.sh` 强制。
 
 ## 目录
 
@@ -19,6 +19,8 @@ global-instruction/
 ├── guides/                  # 可移植流程与排查指南
 │   ├── spec-driven-workflow.md
 │   ├── workflow-conventions.md
+│   ├── anti-rationalizations.md
+│   ├── skill-authoring.md
 │   ├── cross-compile-windows-rust.md
 │   ├── network-mirrors-cn.md
 │   ├── shared-machine-build-policy.md

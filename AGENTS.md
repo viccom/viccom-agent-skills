@@ -37,7 +37,7 @@ viccom-agent-skills/
 │       ├── README.md
 │       ├── validate.sh                    # 包自检（含预算与跨宿主引用检查）
 │       ├── templates/                     # machine-profile/auto-memory/MCP/hooks/plugins/门禁/体检
-│       ├── guides/                        # 与 zcode 包同源 6 篇（spec 工作流已适配 Claude 机制）
+│       ├── guides/                        # 与 zcode 包同源 8 篇（工作流/反理性化/skill 编写/交叉编译/镜像/编译资源/坑；spec 工作流已适配 Claude 机制）
 │       └── archive/                       # 改写前本机 CLAUDE.md 快照（非可移植）
 ├── codex/               # Codex 提示词体系文档与可移植全局指令
 │   ├── prompt-design.md # Codex 0.167.1 提示词体系设计（版本相关，非可移植）
@@ -103,9 +103,9 @@ viccom-agent-skills/
 - `CLAUDE.md` —— 跨项目行为约束（十节：优先级表 / MUST 底线 / 工作流 / 完成定义 GATE / 调试熔断 / 沟通 / 能力路由 / CLAUDE.md 发现规则与 auto memory / 机器环境 / 工作流默认值）。
 - `SEDS.md` —— 项目级 `CLAUDE.md` 十四段式模板（序言为 Claude 发现规则：祖先链全量拼接 / 子目录懒加载 / `CLAUDE.local.md`）。
 - `README.md` —— 安装（最小/完整）/放置矩阵/新会话自检/卸载/维护（live 重建配方）/安全。
-- `validate.sh` —— 包自检：JSON/shell/链接/密钥 + 预算（≤200 行/14,000B）+ 无 `@` import + 无跨宿主引用 + 门禁回归。
+- `validate.sh` —— 包自检：JSON/shell/链接/密钥 + 预算（≤200 行/18,000B）+ 无 `@` import + 无跨宿主引用 + 门禁回归。
 - `templates/` —— machine-profile、auto memory 说明、MCP/hooks/plugins **合并片段**示例、`quality.just`、体检脚本。
-- `guides/` —— 与 zcode 包同源 6 篇（`spec-driven-workflow.md` 已按 Claude 发现规则适配）。
+- `guides/` —— 与 zcode 包同源 8 篇（`spec-driven-workflow.md` 已按 Claude 发现规则适配；`anti-rationalizations.md` 与 `skill-authoring.md` 已同步 Claude 化引用）。
 - `archive/` —— 改写前本机 `~/.claude/CLAUDE.md` 快照，**非可移植**。
 
 维护规则：

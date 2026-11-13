@@ -28,6 +28,8 @@ for f in \
   CLAUDE.md SEDS.md validate.sh \
   guides/spec-driven-workflow.md \
   guides/workflow-conventions.md \
+  guides/anti-rationalizations.md \
+  guides/skill-authoring.md \
   guides/cross-compile-windows-rust.md \
   guides/network-mirrors-cn.md \
   guides/shared-machine-build-policy.md \
@@ -92,7 +94,7 @@ fi
 section "portable policy"
 if [ -s "$ROOT/CLAUDE.md" ]; then
   bytes=$(wc -c <"$ROOT/CLAUDE.md")
-  if [ "$bytes" -le 14000 ]; then pass "CLAUDE.md size: ${bytes}B <= 14000B"; else fail "CLAUDE.md size: ${bytes}B > 14000B"; fi
+  if [ "$bytes" -le 18000 ]; then pass "CLAUDE.md size: ${bytes}B <= 18000B"; else fail "CLAUDE.md size: ${bytes}B > 18000B"; fi
   lines=$(wc -l <"$ROOT/CLAUDE.md")
   if [ "$lines" -le 200 ]; then pass "CLAUDE.md lines: ${lines} <= 200"; else fail "CLAUDE.md lines: ${lines} > 200"; fi
 fi
