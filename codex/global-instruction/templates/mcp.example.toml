@@ -1,6 +1,10 @@
 # Codex MCP 配置结构示例（脱敏占位符）。
 # 合并进 $CODEX_HOME/config.toml；项目级可放 <repo>/.codex/config.toml（仅受信任项目）。
 # 不要直接使用占位符；真实 token 只通过环境变量或 0600 文件提供。
+#
+# 远端 optional HTTP server 默认只等待 mcp_optional_startup_grace_ms（默认 1000ms）；
+# 握手慢时会被标记 pending 并省略工具。慢网关/跨地域端点建议在顶层设 5000。
+# mcp_optional_startup_grace_ms = 5000
 
 # Streamable HTTP server
 [mcp_servers.example_http]
@@ -14,6 +18,7 @@ enabled = true
 required = false
 enabled_tools = ["search", "read"]
 disabled_tools = ["delete"]
+# auto：按 annotations 决定；writes：只读工具免审批；approve：全部免审批
 default_tools_approval_mode = "prompt"
 
 # STDIO server

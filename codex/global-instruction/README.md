@@ -10,6 +10,8 @@
 - 预算：`AGENTS.md` 目标 ≤ 20,000 字节、≤ 240 行；由 `validate.sh` 强制。
 - 与 ZCode / Claude Code 包同源异构：§0-§10 行为策略一致；发现规则、记忆、MCP/hooks/plugins 模板按 Codex 机制适配。差异集中在：`AGENTS.override.md`/`AGENTS.md` 全局优先级、root→cwd 项目链、32 KiB 项目预算、TOML 配置、Memories 默认关闭、Skill 目录预算。
 
+> ⚠️ 覆盖前确认：`$CODEX_HOME/AGENTS.md` 若已做本机适配（记忆服务路由、机器路径、技能目录等），**不要**用本包的 `AGENTS.md` 直接覆盖它。本包给的是可移植策略；本机适配请自行合并，或把本包放在独立目录只作参考。
+
 ## 目录
 
 ```text
@@ -21,6 +23,8 @@ global-instruction/
 ├── guides/                   # 可移植流程、排查与 Codex harness 观测指南
 │   ├── spec-driven-workflow.md
 │   ├── workflow-conventions.md
+│   ├── anti-rationalizations.md
+│   ├── skill-authoring.md
 │   ├── cross-compile-windows-rust.md
 │   ├── network-mirrors-cn.md
 │   ├── shared-machine-build-policy.md
@@ -102,9 +106,9 @@ Codex 的发现规则（0.167.1）：
 
 判断标准：这条规则放错层会让 Agent 更容易犯错吗？会就放对；不会就不写。
 
-## 安装后自检（必须新开会话）
+## 安装后自检
 
-全局 `AGENTS.md` 在会话开始时注入，**当前会话看不到新文件**。
+全局 `AGENTS.md` 在会话上下文构造时注入；Codex 检测到文件变化时可能通过 WorldState 发替换通知，但**以新会话或 `codex debug prompt-input` 的实际结果为准**。
 
 ```bash
 test -s "$CODEX_HOME/AGENTS.md" && echo "AGENTS.md installed"

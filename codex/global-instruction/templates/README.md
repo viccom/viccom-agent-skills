@@ -20,6 +20,7 @@
 - 真实 token/API key 只放在环境变量或 `0600` 文件；不写进 `config.toml` 的明文值，不提交到仓库。
 - `machine-profile.md` 含主机名/路径/端口，**不要提交到公共仓库**；仓库只保留 `*.example.md`。
 - `machine-profile.md` 解析顺序：先找与全局 `AGENTS.md` 同目录的那份，再找 `$CODEX_HOME/machine-profile.md`。
+- `env-check.example.sh` 会检查自定义模型目录的 `include_skills_usage_instructions`；该字段不是 `true` 时，Codex 只列技能目录，不注入 `### How to use skills`。
 - `hooks.example.json` 是**命令执行配置**：安装前审查命令与参数；非托管 hook 需要审查/信任，项目级 hook 需项目 trust。
 - 项目级 MCP 配置（`.codex/config.toml`）需要项目 trust；不要因为 clone 了仓库就自动信任。
 - `plugins.example.toml` 的启用/禁用变化通常对新会话生效；插件可贡献 Skill、MCP、App、hooks。

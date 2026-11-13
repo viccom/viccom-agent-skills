@@ -77,12 +77,26 @@ fi
 if [ -f "$codex_home/models_catalog.json" ] && have python3; then
   python3 -m json.tool "$codex_home/models_catalog.json" >/dev/null 2>&1 \
     && ok "models_catalog.json parses" || bad "models_catalog.json invalid"
+  python3 - "$codex_home/models_catalog.json" <<'PYEOF'
+import json, sys
+try:
+    data = json.load(open(sys.argv[1]))
+except Exception:
+    raise SystemExit(0)
+models = data.get("models", data if isinstance(data, list) else [])
+missing = [m.get("slug", "?") for m in models if not m.get("include_skills_usage_instructions", False)]
+if missing:
+    print("WARN include_skills_usage_instructions is not true for: " + ", ".join(missing))
+    print("WARN Codex will list skills but omit '### How to use skills'")
+else:
+    print("OK   all models enable include_skills_usage_instructions")
+PYEOF
 fi
 
 section "Skills"
 for d in "$HOME/.agents/skills" "$codex_home/skills"; do
   if [ -d "$d" ]; then
-    ok "$d: $(find "$d" -maxdepth 3 -name SKILL.md 2>/dev/null | wc -l) SKILL.md"
+    ok "$d: $(find -L "$d" -maxdepth 3 -name SKILL.md 2>/dev/null | wc -l) SKILL.md"
   else
     warn "$d missing"
   fi

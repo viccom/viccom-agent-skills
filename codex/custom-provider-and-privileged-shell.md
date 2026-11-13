@@ -224,6 +224,7 @@ Codex 的 base instructions、工具模式和上下文窗口由**模型目录**�
       "priority": 1,
       "truncation_policy": {"mode": "tokens", "limit": 10000},
       "input_modalities": ["text", "image"],
+      "include_skills_usage_instructions": true,
       "base_instructions": "You are a coding agent running in the Codex CLI..."
     }
   ]
@@ -249,13 +250,39 @@ Codex 的 base instructions、工具模式和上下文窗口由**模型目录**�
 | `input_modalities` | 否 | 支持图像时加 `image` |
 | `use_responses_lite` | 否 | 仅在网关明确支持时开启 |
 | `tool_mode` | 否 | `direct` / `code_mode` / `code_mode_only`；不确定时不要设 |
-| `include_skills_usage_instructions` | 否 | 是否追加 Skill 使用说明 |
+| `include_skills_usage_instructions` | 否 | 设为 `true` 才追加 `### How to use skills`；省略时默认 `false`，模型只看到目录，不知道要先读 `SKILL.md` |
 | `include_plugin_usage_instructions` | 否 | 是否追加插件使用说明 |
 | `include_apps_usage_instructions` | 否 | 默认 true |
 | `support_verbosity` | 否 | 是否支持 Responses `text.verbosity`；不确定时 `false` |
 | `experimental_supported_tools` | 否 | 实验工具白名单；不确定时留空 |
 
 `base_instructions` 是旧字段；源码会在没有 `model_messages.instructions_template` 时把它提升为后者。新目录建议直接写 `model_messages.instructions_template`，旧目录继续用 `base_instructions` 也能工作。[A]
+
+### 3.3.1 技能使用说明开关
+
+Codex 的 `<skills_instructions>` 有两部分：
+
+```text
+技能目录（name / description / file locator）
+  + ### How to use skills（触发规则、必须先读 SKILL.md、references/scripts 处理）
+```
+
+第二部分由模型目录字段控制：
+
+```json
+"include_skills_usage_instructions": true
+```
+
+该字段在 `ModelInfo` 中默认是 `false`。自定义模型目录省略它时，Codex 仍会列出技能，但不会告诉模型“先完整读取 `SKILL.md`”；表现就是技能目录可见、模型却不主动使用技能。[A]
+
+每个模型条目都要设置，不能只在顶层写一次。改完后重启 Codex 会话，并用：
+
+```bash
+codex debug models | jq -r '.models[] | [.slug, .include_skills_usage_instructions] | @tsv'
+codex debug prompt-input 'Reply with OK only.' | grep -c '### How to use skills'
+```
+
+第二条应输出 `1`。
 
 ### 3.4 目录加载规则
 
@@ -390,6 +417,7 @@ PY
 | 工具调用异常 | 网关未完整实现 Responses 工具协议 | 先用纯文本验证；再逐项验证 shell/apply_patch/web_search |
 | 长任务流中断 | 网关空闲超时 | 调大 `stream_idle_timeout_ms`、`stream_max_retries` |
 | 修改目录不生效 | 目录只在启动时加载 | 退出并重启 Codex |
+| 技能目录可见但模型不读 `SKILL.md` | `include_skills_usage_instructions` 缺失或为 `false` | 每个模型条目设为 `true`，重启后确认 prompt 含 `### How to use skills` |
 
 ### 5.1 认证头
 

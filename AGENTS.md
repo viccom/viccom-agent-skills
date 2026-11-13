@@ -48,7 +48,7 @@ viccom-agent-skills/
 │       ├── README.md
 │       ├── validate.sh                    # 包自检（JSON/TOML/shell/链接/密钥/预算/门禁回归）
 │       ├── templates/                     # machine-profile/Memories/MCP/hooks/plugins/skill-routing/门禁/体检
-│       ├── guides/                        # 共享 6 篇 + Codex harness 观测
+│       ├── guides/                        # 共享 8 篇 + Codex harness 观测
 │       └── archive/                       # 建立前状态说明（非可移植）
 └── skills/
     └── <skill-name>/   # 每个子目录 = 一个独立可分发的技能
@@ -138,7 +138,7 @@ viccom-agent-skills/
 - `README.md` —— 安装（最小/完整）/放置矩阵/新会话自检/卸载/维护/安全。
 - `validate.sh` —— 包自检：JSON/TOML/shell/链接/密钥 + 预算（≤240 行/20,000B）+ 无 `@` import + 无跨宿主引用 + 门禁回归。
 - `templates/` —— machine-profile、Memories、MCP TOML、hooks JSON、plugins TOML、skill-routing、精选技能安装脚本、`quality.just`、体检脚本。
-- `guides/` —— 共享 6 篇 + `codex-harness-inspection.md`。
+- `guides/` —— 共享 8 篇 + `codex-harness-inspection.md`（共 9 篇）。
 - `archive/` —— 建立本包前的状态说明，**非可移植**。
 
 维护规则：
@@ -281,7 +281,7 @@ Repository conventions for agents and contributors:
 - `zcode/global-instruction/` is a **portable** ZCode global-policy package: `AGENTS.md` (cross-project rules, no machine paths or exhaustive skill catalog), `SEDS.md`, `templates/` (machine profile, memory, MCP/hooks, quality gate, health check), `guides/` (spec workflow, worktree/binary conventions, anti-rationalizations, skill authoring, cross-compile, mirrors, shared-machine builds, pitfalls), `validate.sh` (package self-check and quality-gate regression), and `archive/` (raw machine-specific ai-memory/jcode snapshots, not portable). The live `~/.zcode/AGENTS.md` is left unchanged and must not be overwritten by the repo copy. Machine facts belong in a per-machine `machine-profile.md`, not in the repo policy.
 - `zcode/prompt-design.md` documents the ZCode prompt architecture: built-in prompts, instruction-file discovery, native/ai-memory, skills, MCP, hooks, plugins, subagents and compaction, with evidence levels and reproduction commands.
 - `claude-code/global-instruction/` is a **portable** Claude Code global-policy package symmetric to the zcode one (same §0-§10 policy core; discovery rules, auto memory and config templates adapted to Claude Code mechanics). The live `~/.claude/CLAUDE.md` is the machine adaptation (package §0-§10 + local §11) and must not be overwritten by the repo copy. Claude Code concatenates every ancestor `CLAUDE.md` (not nearest-only), lazy-loads subdirectory files, and reads `CLAUDE.local.md` — see the package README for the placement matrix. Run `bash claude-code/global-instruction/validate.sh` after changes.
-- `codex/global-instruction/` is a **portable** Codex global-policy package adapted to Codex mechanics: `AGENTS.override.md`/`AGENTS.md` global precedence, root→cwd project chain, per-directory overrides, a 32 KiB project budget, no `CLAUDE.md` prompt discovery, no `@import`, and no subdirectory lazy loading. The live `~/.codex/AGENTS.md` is a copy of the package policy; machine facts live in `~/.codex/machine-profile.md` and `~/.codex/skill-routing.md`. Run `bash codex/global-instruction/validate.sh` after changes.
+- `codex/global-instruction/` is a **portable** Codex global-policy package adapted to Codex mechanics: `AGENTS.override.md`/`AGENTS.md` global precedence, root→cwd project chain, per-directory overrides, a 32 KiB project budget, no `CLAUDE.md` prompt discovery, no `@import`, and no subdirectory lazy loading. Its `guides/` add anti-rationalizations and skill authoring alongside the shared workflow guides and `codex-harness-inspection`. The live `~/.codex/AGENTS.md` is a copy of the package policy; machine facts live in `~/.codex/machine-profile.md` and `~/.codex/skill-routing.md`. Run `bash codex/global-instruction/validate.sh` after changes.
 - `codex/prompt-design.md` documents the Codex 0.167.1 prompt architecture: model-owned base instructions, incremental WorldState context, AGENTS.md discovery, skills, MCP, hooks, plugins, subagents, memories, compaction and prompt caching, with evidence levels and reproduction commands.
 - `skills/` currently holds 1 first-party skill (`1panel-ops`), 126 licensed vendored third-party skills, and 14 skills with unconfirmed provenance/license (included at the owner's explicit request; see `third-party/UNVERIFIED.md`). Keep vendored content as upstream wrote it; provenance/versions/licenses live in `third-party/SOURCES.md` and `third-party/licenses/`. Never add a skill whose license or upstream is unclear without the owner's explicit approval.
 - **Never hardcode** machine-specific values (IPs, domains, ports, install paths) in **first-party** skills. Use placeholders resolved by detection scripts.

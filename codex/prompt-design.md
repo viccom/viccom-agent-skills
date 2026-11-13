@@ -543,7 +543,7 @@ Skill 目录以 developer `<skills_instructions>` 注入。默认预算：
 - 目录超预算时先截短描述；仍然超限时省略部分 Skill 并发出 warning。
 - 被选中 Skill 的正文读取上限 **8,000 bytes**；超过会截断。
 
-本机当前目录块为 **4,281 chars**，列出 **10 个 Skill**：4 个系统 Skill + 6 个 `ai-memory-*` Skill。`include_skills_usage_instructions` 在本机自定义模型目录中为 null，因此目录没有追加 “How to use skills” 规则块；这是一处需要自定义模型目录作者显式决定的行为。
+本机当前目录块为 **22,021 chars / 22,229 bytes**，列出 **56 条 Skill 条目**：4 个系统 Skill（`review-agent` 未列入）+ 52 个用户 Skill（46 个本仓库软链 + 6 个 ai-memory）。`include_skills_usage_instructions` 在当前自定义模型目录中已显式设为 `true`，因此目录末尾会追加 `### How to use skills` 规则块（包含“必须先完整读取 `SKILL.md`”与触发规则）。该字段在 `ModelInfo` 中默认是 `false`；自定义模型目录若省略它，Codex 只注入技能目录，不注入使用规则。[A]
 
 ### 5.5 激活与正文注入
 
@@ -777,7 +777,7 @@ Codex 的缓存友好策略：
 | cwd | `~/tools-git/viccom-agent-skills` | 当前会话 |
 | base instructions | 20,751 chars / 20,904 bytes | 自定义 models catalog |
 | developer message | 5,974 chars | rollout |
-| ├ skills 目录 | 4,281 chars，10 个 Skill | rollout |
+| ├ skills 目录 | 22,021 chars，56 条 Skill 条目 | `codex debug prompt-input` |
 | ├ permissions | 362 chars（danger-full-access / never） | rollout |
 | └ collaboration mode | 1,329 chars（Default） | rollout |
 | 项目 AGENTS.md 注入块（建立前） | 11,289 chars / 16,598 bytes | rollout；文件 `wc -c` |
@@ -788,9 +788,10 @@ Codex 的缓存友好策略：
 | 项目 AGENTS.md | 仓库根 `AGENTS.md` | AGENTS 块标题 |
 | world-state sections | 17 | rollout `world_state` |
 | Skill roots | `~/.agents/skills`, `~/.codex/skills/.system` | `codex debug prompt-input` |
-| 精选编程 Skill | 46 个本仓库软链 + 6 个 ai-memory；catalog 共 52 个 | `~/.agents/skills`；`codex debug prompt-input` |
-| Skill 目录成本 | 19,185 bytes / ~4,796 tokens（56 条 catalog 条目） | 本机 probe |
-| MCP servers | 0 | `codex doctor` |
+| 用户 Skill | 46 个本仓库软链 + 6 个 ai-memory；catalog 用户条目 52 个，总计 56 条 | `~/.agents/skills`；`codex debug prompt-input` |
+| Skill 目录成本 | 22,021 chars / 22,229 bytes（56 条 catalog 条目，含 usage rules） | 本机 probe |
+| MCP servers | 2：`anysearch` + `ai-memory`（streamable HTTP） | `codex mcp list` / `codex doctor` |
+| MCP tools | `anysearch` 5 个 + `ai_memory` 27 个 | `codex exec` 实测 |
 | Plugins | 未启用 | turn context / doctor |
 | Hooks | 未配置 | `~/.codex` / `config.toml` |
 | Memories | 功能关闭，DB 存在 | `codex features list` / `~/.codex` |
@@ -800,7 +801,7 @@ Codex 的缓存友好策略：
 
 > 快照只记录结构事实，不含 API key/token。2026-11-11 已建立 Codex 全局指令层；§9 中 developer/user 的细项长度来自建立前会话，建立后新请求会同时注入全局 `AGENTS.md` 与项目 `AGENTS.md`（`--- project-doc ---` 分隔）。`codex debug prompt-input` 使用其自己的 invocation config（本机 probe 为 `workspace-write` + `on-request`），因此 permissions 长度与当前 `danger-full-access` 会话不同；这不是实现矛盾，而是配置不同。
 
-> 同日又安装了 46 个精选编程 Skill；技能目录从 4,281 chars 增至 19,185 bytes（约 4,796 tokens），仍低于默认 10k token 上限，未出现省略/截断警告。
+> 同日又安装了精选编程 Skill；技能目录从 4,281 chars 增至 22,021 chars（56 条，含 `### How to use skills`），仍低于默认 10k token 上限，未出现省略/截断警告。
 
 ## 10. 已知未知与验证方法
 
@@ -811,7 +812,7 @@ Codex 的缓存友好策略：
 | provider/gateway 是否改写 role | 本机 magpie 为 OpenAI 兼容网关，未逐字节对比 | 抓上游请求，比较 `input[].role` |
 | 缓存命中率 | 未读取服务端 usage 明细 | 检查响应 `usage.cached_tokens` / gateway 日志 |
 | Skill 目录预算的 token 估算 | 源码是 approx_token_count；实际 tokenizer 未验证 | 构造接近 2% 的目录，观察 warning/省略 |
-| `include_skills_usage_instructions` 为 null 的行为 | 本机自定义模型目录为 null，目录未追加 usage rules | 显式设 true/false，对比 `<skills_instructions>` |
+| `include_skills_usage_instructions` 的行为 | **已确认**：默认 `false`，设为 `true` 才追加 `### How to use skills` | `codex debug models` 看字段；`codex debug prompt-input` 搜 `### How to use skills` |
 | Memories 实际注入 | 功能未启用 | 打开 `features.memories`，创建 memory summary，新会话检查 developer 段 |
 | MCP server instructions 的实际长度 | 未连接 MCP server | 配一个返回长 instructions 的 server，检查 namespace description |
 | deferred tool summary 行为 | 本机无 MCP，未触发 | 配大量 MCP 工具，观察 `tools` world-state 段 |

@@ -93,6 +93,7 @@ OOM 时降到 jobs = <n>
 - 当前模型：`<model slug>`
 - 模型目录：`<~/.codex/models_catalog.json | none>`
 - `base_instructions` 来源：`<model catalog | model_instructions_file | session history>`
+- 技能使用说明：`include_skills_usage_instructions = <true | false>`（`true` 才会追加 `### How to use skills`）
 - 已知模型限制：`<tool_mode, responses_lite, context window, truncation policy>`
 
 ## 7. Skills / MCP / Hooks / Plugins / Memories

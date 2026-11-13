@@ -25,6 +25,8 @@ for f in \
   AGENTS.md SEDS.md README.md validate.sh \
   guides/spec-driven-workflow.md \
   guides/workflow-conventions.md \
+  guides/anti-rationalizations.md \
+  guides/skill-authoring.md \
   guides/cross-compile-windows-rust.md \
   guides/network-mirrors-cn.md \
   guides/shared-machine-build-policy.md \
